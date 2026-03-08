@@ -20,7 +20,7 @@ function App() {
         throw new Error("Empty fields")
       }
 
-      axios.get(`http://localhost:3500/login?Email=${email}&Password=${pass}`)
+      axios.get(`https://login-backend-lqe2.onrender.com/login?Email=${email}&Password=${pass}`)
         .then(res => {
           if (res.data === true) {
             navigate("/Success")
