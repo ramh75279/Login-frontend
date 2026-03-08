@@ -1,25 +1,57 @@
-import logo from './logo.svg';
-import './App.css';
-
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
+import axios from "axios"
+import "./App.css"
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+  const navigate = useNavigate()
+  const [email, setemail] = useState("")
+  const [pass, setpass] = useState("")
+  const [error, setError] = useState(false)
 
-export default App;
+  function handelemail(evt) {
+    setemail(evt.target.value)
+  }
+  function handelpass(evt) {
+    setpass(evt.target.value)
+  }
+  function check() {
+    try {
+      if (email.trim() === "" || pass.trim() === "") {
+        throw new Error("Empty fields")
+      }
+
+      axios.get(`http://localhost:3500/login?Email=${email}&Password=${pass}`)
+        .then(res => {
+          if (res.data === true) {
+            navigate("/Success")
+          } else {
+            navigate("/Fail")
+          }
+        })
+        .catch(err => {
+          setError("Server connection failed. Please try again")
+          console.error(err)
+        })
+    } catch (err) {
+      setError("Email and Password cannot be empty")
+      console.error(err)
+    }
+  }
+  return (
+    <div className="heading">
+      <div className="logoinbox">
+        <h1 className="logo">NETFLIX</h1>
+        <h2>SIGN IN</h2>
+        <input onChange={handelemail} name="Email" placeholder=" Email"></input>
+        <input type="password" onChange={handelpass} name="Password" placeholder=" Password"></input>
+        <button onClick={check}>Sign in</button>
+        {error && (
+          <p className="error">Please try again!</p>
+        )}
+      </div>
+    </div>
+
+
+  )
+}
+export default App
